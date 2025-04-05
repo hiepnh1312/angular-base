@@ -12,7 +12,17 @@
   },
   "sidebar": {
     "home": "Trang chủ",
-    "login": "Đăng nhập"
+    "login": "Đăng nhập",
+    "management": "Quản lý hệ thống",
+    "user": "Tài khoản người dùng",
+    "role": "Vai trò & quyền hạn",
+    "content": "Quản lý nội dung",
+    "posts": "Bài viết",
+    "media": "Thư viện media"
+  },
+  "header": {
+    "logout": "Đăng xuất",
+    "profile": "Thông tin cá nhân"
   },
   "footer": {
     "copyright": "© 2025 Ứng dụng của tôi"

@@ -1,9 +1,12 @@
 import { User } from '../../domain/models/user.model';
 
 export interface MenuItem {
+  id: string;
   label: string;
-  path: string;
-  roles?: string[];
+  path?: string;
+  icon?: string;
+  parentId?: string | null;
+  children?: MenuItem[];
 }
 
 export interface AuthState {

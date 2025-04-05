@@ -1,39 +1,29 @@
-import { Component, TemplateRef, ViewChild } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { OverlayModule } from '@angular/cdk/overlay';
-import { PortalModule, TemplatePortal } from '@angular/cdk/portal';
-import { ViewContainerRef } from '@angular/core';
-import {RouterLink} from '@angular/router';
+import { CdkMenuModule } from '@angular/cdk/menu';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
+
+import * as AuthActions from '../../../../../store/auth/auth.actions';
+import {selectUser} from '../../../../../store/auth/auth.selectors';
 
 @Component({
-  standalone: true,
   selector: 'app-header',
+  standalone: true,
+  imports: [
+    CommonModule,
+    CdkMenuModule,
+    TranslateModule
+  ],
   templateUrl: './header.component.html',
-  imports: [CommonModule, OverlayModule, PortalModule, RouterLink],
+  styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {
-  @ViewChild('userMenu') userMenuRef!: TemplateRef<any>;
+  private store = inject(Store);
+  user$: Observable<any> = this.store.select(selectUser);
 
-  constructor(private viewContainerRef: ViewContainerRef) {}
-
-  overlayRef: any;
-
-  openMenu(event: MouseEvent) {
-    event.stopPropagation();
-    const { Overlay, OverlayPositionBuilder } = require('@angular/cdk/overlay');
-    const positionStrategy = new OverlayPositionBuilder()
-      .flexibleConnectedTo({ x: event.clientX, y: event.clientY })
-      .withPositions([{ originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top' }]);
-
-    this.overlayRef = new Overlay().create({
-      positionStrategy,
-      hasBackdrop: true,
-      backdropClass: 'cdk-overlay-transparent-backdrop'
-    });
-
-    this.overlayRef.backdropClick().subscribe(() => this.overlayRef.detach());
-
-    const portal = new TemplatePortal(this.userMenuRef, this.viewContainerRef);
-    this.overlayRef.attach(portal);
+  logout() {
+    this.store.dispatch(AuthActions.logout());
   }
 }

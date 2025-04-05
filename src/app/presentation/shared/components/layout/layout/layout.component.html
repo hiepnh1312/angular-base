@@ -1,6 +1,21 @@
-<app-header />
-<div class="flex flex-1">
-  <app-sidebar />
-  <router-outlet />
+<div class="h-screen w-screen flex flex-col overflow-hidden">
+  <!-- HEADER -->
+  <app-header class="shrink-0"></app-header>
+
+  <!-- BODY: sidebar + content -->
+  <div class="flex flex-1 overflow-hidden">
+    <!-- SIDEBAR -->
+    <app-sidebar class="w-64 shrink-0 overflow-y-auto bg-slate-900 text-white"></app-sidebar>
+
+    <!-- CONTENT + FOOTER -->
+    <div class="flex-1 flex flex-col bg-gray-50 overflow-hidden">
+      <!-- Main Content -->
+      <main class="flex-1 overflow-y-auto p-4">
+        <router-outlet></router-outlet>
+      </main>
+
+      <!-- Footer chỉ bên trong content -->
+      <app-footer class="shrink-0 text-center text-sm text-gray-500 bg-gray-100" />
+    </div>
+  </div>
 </div>
-<app-footer />

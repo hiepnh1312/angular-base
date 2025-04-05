@@ -1,7 +1,7 @@
 {
   "login": {
-    "title": "Login to the System",
-    "subtitle": "Please enter your credentials to continue",
+    "title": "Login to system",
+    "subtitle": "Please enter your information to continue",
     "username": "Username",
     "password": "Password",
     "button": "Login"
@@ -12,7 +12,17 @@
   },
   "sidebar": {
     "home": "Home",
-    "login": "Login"
+    "login": "Login",
+    "management": "System Management",
+    "user": "Users",
+    "role": "Roles & Permissions",
+    "content": "Content Management",
+    "posts": "Posts",
+    "media": "Media Library"
+  },
+  "header": {
+    "logout": "Logout",
+    "profile": "Profile"
   },
   "footer": {
     "copyright": "© 2025 My Application"

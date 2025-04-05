@@ -1,13 +1,26 @@
-<aside class="w-64 bg-gray-100 h-full p-4 hidden md:block">
-  <ng-container *ngIf="user$ | async as user">
-    <ul class="space-y-2">
-      <li *ngFor="let item of menu$ | async">
-        <ng-container *ngIf="!item.roles || item.roles.includes(user?.role + '')">
-          <a [routerLink]="item.path" class="text-blue-600 hover:underline">
-            {{ item.label | translate }}
-          </a>
-        </ng-container>
-      </li>
-    </ul>
-  </ng-container>
-</aside>
+<cdk-tree [dataSource]="dataSource" [treeControl]="treeControl">
+  <cdk-tree-node *cdkTreeNodeDef="let node" cdkTreeNodePadding [style.paddingLeft.px]="node.level * 16">
+
+    <!-- Nếu là menu cha (expandable) thì toggle -->
+    <div *ngIf="node.expandable" class="flex items-center px-3 py-2 rounded hover:bg-slate-700 cursor-pointer text-sm"
+         (click)="treeControl.toggle(node)">
+      <i class="mr-2 w-4 text-xs" [class]="node.icon || 'fas fa-folder'"></i>
+      <span class="flex-1">{{ node.label | translate }}</span>
+      <i class="text-xs"
+         [ngClass]="{
+           'fas fa-chevron-down': treeControl.isExpanded(node),
+           'fas fa-chevron-right': !treeControl.isExpanded(node)
+         }"></i>
+    </div>
+
+    <!-- Nếu là menu con (không expandable) thì dùng routerLink -->
+    <a *ngIf="!node.expandable"
+       [routerLink]="node.path"
+       routerLinkActive="bg-blue-600"
+       class="flex items-center px-3 py-2 rounded hover:bg-slate-700 cursor-pointer text-sm">
+      <i class="mr-2 w-4 text-xs" [class]="node.icon || 'fas fa-folder'"></i>
+      <span class="flex-1">{{ node.label | translate }}</span>
+    </a>
+
+  </cdk-tree-node>
+</cdk-tree>

@@ -10,6 +10,7 @@ import {provideStore, Store} from '@ngrx/store';
 import {provideStoreFeatures} from './store/store.providers';
 import {authInterceptor} from './core/interceptors/auth.interceptor';
 import * as AuthActions from './store/auth/auth.actions';
+import {loadingInterceptor} from './core/interceptors/loading.interceptor';
 
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -32,6 +33,7 @@ export const appConfig: ApplicationConfig = {
       deps: [Store],
       multi: true
     },
+    provideHttpClient(withInterceptors([loadingInterceptor])),
     importProvidersFrom(
       HttpClientModule,
       TranslateModule.forRoot({
