@@ -1,27 +1,23 @@
 import { Injectable } from '@angular/core';
-import { MenuItem } from '../../store/auth/auth.state';
+import {MenuFlatNode, MenuItem} from '../../store/auth/auth.state';
 
 @Injectable({ providedIn: 'root' })
 export class MenuService {
-  buildMenuTree(flatMenu: MenuItem[]): MenuItem[] {
-    const map = new Map<string, MenuItem>();
-    const roots: MenuItem[] = [];
+  buildMenuTree(flatMenu: MenuItem[], parentId: string | null = null, level = 0): MenuFlatNode[] {
+    return flatMenu
+      .filter(item => item.parentId === parentId)
+      .reduce<MenuFlatNode[]>((acc, item) => {
+        const flatNode: MenuFlatNode = {
+          id: item.id,
+          label: item.label,
+          path: item.path,
+          icon: item.icon,
+          level,
+          expandable: flatMenu.some(child => child.parentId === item.id)
+        };
 
-    flatMenu.forEach(item => {
-      map.set(item.id, { ...item, children: [] });
-    });
-
-    map.forEach(item => {
-      if (item.parentId) {
-        const parent = map.get(item.parentId);
-        if (parent) {
-          parent.children!.push(item);
-        }
-      } else {
-        roots.push(item);
-      }
-    });
-
-    return roots;
+        const children = this.buildMenuTree(flatMenu, item.id, level + 1);
+        return [...acc, flatNode, ...children];
+      }, []);
   }
 }

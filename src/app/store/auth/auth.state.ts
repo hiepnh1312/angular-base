@@ -26,3 +26,7 @@ export const initialAuthState: AuthState = {
   menu: [],
   error: null,
 };
+export interface MenuFlatNode extends MenuItem {
+  level: number;
+  expandable: boolean;
+}

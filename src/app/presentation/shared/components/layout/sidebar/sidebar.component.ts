@@ -16,12 +16,8 @@ import {
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 import { selectMenu } from '../../../../../store/auth/auth.selectors';
-import { MenuItem } from '../../../../../store/auth/auth.state';
-
-interface MenuFlatNode extends MenuItem {
-  level: number;
-  expandable: boolean;
-}
+import { MenuItem, MenuFlatNode } from '../../../../../store/auth/auth.state';
+import {MenuService} from '../../../../../application/services/menu.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -40,6 +36,7 @@ interface MenuFlatNode extends MenuItem {
 export class SidebarComponent {
   private store = inject(Store);
   private router = inject(Router);
+  private menuService = inject(MenuService);
 
   treeControl = new FlatTreeControl<MenuFlatNode>(
     node => node.level,
@@ -51,33 +48,10 @@ export class SidebarComponent {
   hasChild = (_: number, node: MenuFlatNode) => node.expandable;
 
   ngOnInit(): void {
-    this.store.select(selectMenu).pipe(
-      map(menu => this.flattenMenu(menu || []))
-    ).subscribe(data => {
-      this.dataSource.next(data);
+    this.store.select(selectMenu).subscribe(data => {
+      const menu = this.menuService.buildMenuTree(data || [])
+      this.dataSource.next(menu);
+      this.treeControl.dataNodes = menu;
     });
-  }
-
-  private flattenMenu(menu: MenuItem[], level = 0): MenuFlatNode[] {
-    return menu.reduce<MenuFlatNode[]>((acc, item) => {
-      const flatItem: MenuFlatNode = {
-        ...item,
-        level,
-        expandable: !!item.children?.length
-      };
-      return [
-        ...acc,
-        flatItem,
-        ...(item.children ? this.flattenMenu(item.children, level + 1) : [])
-      ];
-    }, []);
-  }
-
-  onNodeClick(node: MenuFlatNode): void {
-    if (node.expandable) {
-      this.treeControl.toggle(node);
-    } else if (node.path) {
-      this.router.navigate([node.path]);
-    }
   }
 }

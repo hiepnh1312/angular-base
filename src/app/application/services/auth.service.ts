@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { User } from '../../domain/models/user.model';
-import { MenuItem } from '../../store/auth/auth.state';
+import {MenuFlatNode, MenuItem} from '../../store/auth/auth.state';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
