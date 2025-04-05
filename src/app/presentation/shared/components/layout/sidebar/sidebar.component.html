@@ -1,0 +1,13 @@
+<aside class="w-64 bg-gray-100 h-full p-4 hidden md:block">
+  <ng-container *ngIf="user$ | async as user">
+    <ul class="space-y-2">
+      <li *ngFor="let item of menu$ | async">
+        <ng-container *ngIf="!item.roles || item.roles.includes(user?.role + '')">
+          <a [routerLink]="item.path" class="text-blue-600 hover:underline">
+            {{ item.label | translate }}
+          </a>
+        </ng-container>
+      </li>
+    </ul>
+  </ng-container>
+</aside>

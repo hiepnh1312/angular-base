@@ -1,0 +1,6 @@
+<p *ngIf="errorKey" class="text-sm text-red-500 mt-1">
+  <ng-container *ngIf="translate; else plain">
+    {{ 'validation.' + errorKey | translate }}
+  </ng-container>
+  <ng-template #plain>{{ errorKey }}</ng-template>
+</p>
