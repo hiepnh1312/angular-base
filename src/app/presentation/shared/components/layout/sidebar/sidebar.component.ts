@@ -3,7 +3,6 @@ import { FlatTreeControl } from '@angular/cdk/tree';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { BehaviorSubject } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   NgIf,
