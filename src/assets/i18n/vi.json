@@ -1,0 +1,26 @@
+{
+  "login": {
+    "title": "Đăng nhập hệ thống",
+    "subtitle": "Vui lòng nhập thông tin để tiếp tục",
+    "username": "Tài khoản",
+    "password": "Mật khẩu",
+    "button": "Đăng nhập"
+  },
+  "home": {
+    "welcome": "Chào mừng bạn đến trang chủ",
+    "logout": "Đăng xuất"
+  },
+  "sidebar": {
+    "home": "Trang chủ",
+    "login": "Đăng nhập"
+  },
+  "footer": {
+    "copyright": "© 2025 Ứng dụng của tôi"
+  },
+  "validation": {
+    "required": "Trường này là bắt buộc",
+    "minlength": "Độ dài quá ngắn",
+    "maxlength": "Độ dài quá dài",
+    "email": "Định dạng email không đúng"
+  }
+}

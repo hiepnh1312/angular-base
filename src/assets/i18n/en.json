@@ -1,0 +1,26 @@
+{
+  "login": {
+    "title": "Login to the System",
+    "subtitle": "Please enter your credentials to continue",
+    "username": "Username",
+    "password": "Password",
+    "button": "Login"
+  },
+  "home": {
+    "welcome": "Welcome to the homepage",
+    "logout": "Logout"
+  },
+  "sidebar": {
+    "home": "Home",
+    "login": "Login"
+  },
+  "footer": {
+    "copyright": "© 2025 My Application"
+  },
+  "validation": {
+    "required": "This field is required",
+    "minlength": "Too short",
+    "maxlength": "Too long",
+    "email": "Invalid email format"
+  }
+}
