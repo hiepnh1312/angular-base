@@ -24,7 +24,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch()),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
+    provideHttpClient(withFetch(), withInterceptors([loadingInterceptor,authInterceptor])),
     provideStore(),
     provideStoreFeatures,
     {
@@ -33,7 +33,6 @@ export const appConfig: ApplicationConfig = {
       deps: [Store],
       multi: true
     },
-    provideHttpClient(withInterceptors([loadingInterceptor])),
     importProvidersFrom(
       HttpClientModule,
       TranslateModule.forRoot({
