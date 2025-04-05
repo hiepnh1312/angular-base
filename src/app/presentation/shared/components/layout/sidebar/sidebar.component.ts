@@ -2,21 +2,17 @@ import { Component, inject } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { BehaviorSubject } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   NgIf,
-  NgFor,
-  AsyncPipe,
   NgClass,
-  NgStyle
 } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 import { selectMenu } from '../../../../../store/auth/auth.selectors';
-import { MenuItem, MenuFlatNode } from '../../../../../store/auth/auth.state';
+import { MenuFlatNode } from '../../../../../store/auth/auth.state';
 import {MenuService} from '../../../../../application/services/menu.service';
 
 @Component({

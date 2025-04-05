@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { User } from '../../domain/models/user.model';
-import {MenuFlatNode, MenuItem} from './auth.state';
+import { MenuItem} from './auth.state';
 
 export const login = createAction(
   '[Auth] Login',
