@@ -31,7 +31,6 @@ import {MenuService} from '../../../../../application/services/menu.service';
 })
 export class SidebarComponent {
   private store = inject(Store);
-  private router = inject(Router);
   private menuService = inject(MenuService);
 
   treeControl = new FlatTreeControl<MenuFlatNode>(
