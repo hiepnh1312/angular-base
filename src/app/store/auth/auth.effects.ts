@@ -1,11 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { catchError, map, mergeMap, of, tap } from 'rxjs';
+
 import * as AuthActions from './auth.actions';
 import { AuthService } from '../../application/services/auth.service';
 import { AuthApi } from '../../infrastructure/auth/auth.api';
-import { Router } from '@angular/router';
-import { catchError, map, mergeMap, of, tap } from 'rxjs';
-import { Store } from '@ngrx/store';
 
 @Injectable()
 export class AuthEffects {
@@ -20,18 +21,16 @@ export class AuthEffects {
       ofType(AuthActions.login),
       mergeMap(({ username, password }) =>
         this.authApi.login(username, password).pipe(
-          map(user => {
-            if (!user) return AuthActions.loginFailure({ error: 'Invalid credentials' });
+          map(result => {
+            if (!result) {
+              return AuthActions.loginFailure({ error: 'Invalid credentials' });
+            }
 
-            const accessToken = user.token;
-            const refreshToken = 'fake-refresh-token';
+            const { user, accessToken, refreshToken, menu } = result;
+
             this.authService.saveTokens(accessToken, refreshToken);
-
-            // ✅ Dispatch menu tách riêng (tùy role nếu muốn)
-            const menu = [
-              { label: 'sidebar.home', path: '/home', roles: ['admin', 'user'] },
-              { label: 'sidebar.login', path: '/login', roles: ['guest'] }
-            ];
+            this.authService.saveUser(user);
+            this.authService.saveMenu(menu);
 
             this.store.dispatch(AuthActions.setMenu({ menu }));
 
@@ -43,22 +42,20 @@ export class AuthEffects {
     )
   );
 
-  redirectAfterLogin$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(AuthActions.loginSuccess),
-      tap(() => this.router.navigate(['/home']))
-    ), { dispatch: false }
-  );
-
   initAuth$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.initAuth),
       mergeMap(() => {
-        const access = this.authService.getAccessToken();
-        const refresh = this.authService.getRefreshToken();
-        if (access && refresh) {
-          return of(AuthActions.refreshSuccess({ accessToken: access }));
+        const accessToken = this.authService.getAccessToken();
+        const refreshToken = this.authService.getRefreshToken();
+        const user = this.authService.getUser();
+        const menu = this.authService.getMenu();
+
+        if (accessToken && refreshToken && user) {
+          this.store.dispatch(AuthActions.setMenu({ menu }));
+          return of(AuthActions.loginSuccess({ user, accessToken, refreshToken }));
         }
+
         return of(AuthActions.logout());
       })
     )
@@ -69,9 +66,9 @@ export class AuthEffects {
       ofType(AuthActions.refreshToken),
       mergeMap(() =>
         this.authApi.refreshToken().pipe(
-          map(newToken => {
-            this.authService.saveTokens(newToken, this.authService.getRefreshToken()!);
-            return AuthActions.refreshSuccess({ accessToken: newToken });
+          map(newAccessToken => {
+            this.authService.saveTokens(newAccessToken, this.authService.getRefreshToken()!);
+            return AuthActions.refreshSuccess({ accessToken: newAccessToken });
           }),
           catchError(() => of(AuthActions.refreshFailure()))
         )
@@ -79,7 +76,7 @@ export class AuthEffects {
     )
   );
 
-  refreshFail$ = createEffect(() =>
+  refreshFailure$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.refreshFailure),
       map(() => AuthActions.logout())
@@ -90,8 +87,18 @@ export class AuthEffects {
     this.actions$.pipe(
       ofType(AuthActions.logout),
       tap(() => {
-        this.authService.clearTokens();
+        this.authService.clearAll();
         this.router.navigate(['/login']);
+      })
+    ), { dispatch: false }
+  );
+
+  // ✅ NEW: navigate to /home when loginSuccess
+  loginSuccessNavigate$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.loginSuccess),
+      tap(() => {
+        this.router.navigate(['/home']);
       })
     ), { dispatch: false }
   );

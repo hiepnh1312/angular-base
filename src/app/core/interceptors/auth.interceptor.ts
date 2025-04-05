@@ -3,22 +3,24 @@ import { inject } from '@angular/core';
 import { AuthService } from '../../application/services/auth.service';
 import { Store } from '@ngrx/store';
 import * as AuthActions from '../../store/auth/auth.actions';
-import { catchError, throwError, of } from 'rxjs';
+import {catchError} from 'rxjs';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const auth = inject(AuthService);
+  const authService = inject(AuthService);
   const store = inject(Store);
 
-  const token = auth.getAccessToken();
-  const authReq = token ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }) : req;
+  const token = authService.getAccessToken();
+
+  const authReq = token
+    ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
+    : req;
 
   return next(authReq).pipe(
-    catchError(error => {
+    catchError((error: any) => {
       if (error.status === 401) {
-        store.dispatch(AuthActions.refreshToken());
-        // không retry tại đây, để effects xử lý
+        store.dispatch(AuthActions.refreshFailure());
       }
-      return throwError(() => error);
+      throw error;
     })
   );
 };

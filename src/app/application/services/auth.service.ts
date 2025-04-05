@@ -1,25 +1,54 @@
 import { Injectable } from '@angular/core';
+import { User } from '../../domain/models/user.model';
+import { MenuItem } from '../../store/auth/auth.state';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private ACCESS_KEY = 'accessToken';
-  private REFRESH_KEY = 'refreshToken';
+  private isBrowser(): boolean {
+    return typeof window !== 'undefined';
+  }
+
+  saveTokens(access: string, refresh: string): void {
+    if (!this.isBrowser()) return;
+    localStorage.setItem('accessToken', access);
+    localStorage.setItem('refreshToken', refresh);
+  }
 
   getAccessToken(): string | null {
-    return localStorage.getItem(this.ACCESS_KEY);
+    return this.isBrowser() ? localStorage.getItem('accessToken') : null;
   }
 
   getRefreshToken(): string | null {
-    return localStorage.getItem(this.REFRESH_KEY);
+    return this.isBrowser() ? localStorage.getItem('refreshToken') : null;
   }
 
-  saveTokens(access: string, refresh: string) {
-    localStorage.setItem(this.ACCESS_KEY, access);
-    localStorage.setItem(this.REFRESH_KEY, refresh);
+  saveUser(user: User): void {
+    if (!this.isBrowser()) return;
+    localStorage.setItem('user', JSON.stringify(user));
   }
 
-  clearTokens() {
-    localStorage.removeItem(this.ACCESS_KEY);
-    localStorage.removeItem(this.REFRESH_KEY);
+  getUser(): User | null {
+    if (!this.isBrowser()) return null;
+    const raw = localStorage.getItem('user');
+    return raw ? JSON.parse(raw) : null;
+  }
+
+  saveMenu(menu: MenuItem[]): void {
+    if (!this.isBrowser()) return;
+    localStorage.setItem('menu', JSON.stringify(menu));
+  }
+
+  getMenu(): MenuItem[] {
+    if (!this.isBrowser()) return [];
+    const raw = localStorage.getItem('menu');
+    return raw ? JSON.parse(raw) : [];
+  }
+
+  clearAll(): void {
+    if (!this.isBrowser()) return;
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
+    localStorage.removeItem('menu');
   }
 }
