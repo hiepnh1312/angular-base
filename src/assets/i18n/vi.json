@@ -4,7 +4,8 @@
     "subtitle": "Vui lòng nhập thông tin để tiếp tục",
     "username": "Tài khoản",
     "password": "Mật khẩu",
-    "button": "Đăng nhập"
+    "button": "Đăng nhập",
+    "google-login": "Đăng nhập bằng Google"
   },
   "home": {
     "welcome": "Chào mừng bạn đến trang chủ",
@@ -32,5 +33,12 @@
     "minlength": "Độ dài quá ngắn",
     "maxlength": "Độ dài quá dài",
     "email": "Định dạng email không đúng"
+  },
+  "otpDialog": {
+    "title": "Xác thực đăng nhập",
+    "password": "Mật khẩu",
+    "otp": "Mã OTP",
+    "cancel": "Hủy",
+    "confirm": "Xác nhận"
   }
 }

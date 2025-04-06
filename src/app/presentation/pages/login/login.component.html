@@ -4,14 +4,11 @@
     <p class="text-sm text-gray-500 text-center mb-6">{{ 'login.subtitle' | translate }}</p>
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
-      <!-- Username -->
       <div>
         <label class="block text-sm font-medium mb-1 text-gray-700">{{ 'login.username' | translate }}</label>
         <input formControlName="username" class="w-full px-4 py-2 border rounded" />
         <app-inline-message [control]="form.get('username')"></app-inline-message>
       </div>
-
-      <!-- Password -->
       <div>
         <label class="block text-sm font-medium mb-1 text-gray-700">{{ 'login.password' | translate }}</label>
         <input type="password" formControlName="password" class="w-full px-4 py-2 border rounded" />
@@ -21,6 +18,22 @@
       <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg cursor-pointer">
         {{ 'login.button' | translate }}
       </button>
+      <div class="mt-6 border-t pt-4">
+        <button
+          (click)="onClickGoogleLogin()"
+          type="button"
+          class="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700 transition"
+        >
+          <i class="fab fa-google mr-2"></i> {{'login.google-login' |translate}}
+        </button>
+        <div id="googleBtn" class="mt-4 hidden"></div>
+      </div>
+
+      <app-otp-password-dialog
+        *ngIf="showOtp()"
+        (confirmed)="onOtpConfirmed()"
+        (canceled)="showOtp.set(false)"
+      ></app-otp-password-dialog>
     </form>
   </div>
 </div>

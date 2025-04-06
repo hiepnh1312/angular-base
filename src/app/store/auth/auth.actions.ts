@@ -34,3 +34,5 @@ export const setMenu = createAction(
   '[Auth] Set Menu',
   props<{ menu: MenuItem[] }>()
 );
+
+export const loginWithGoogle = createAction('[Auth] Login With Google', props<{ credential: string }>());

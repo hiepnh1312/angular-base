@@ -8,6 +8,7 @@ import * as AuthActions from './auth.actions';
 import { AuthService } from '../../application/services/auth.service';
 import { AuthApi } from '../../infrastructure/auth/auth.api';
 
+
 @Injectable()
 export class AuthEffects {
   private actions$ = inject(Actions);
@@ -15,7 +16,10 @@ export class AuthEffects {
   private authApi = inject(AuthApi);
   private router = inject(Router);
   private store = inject(Store);
-
+  private decodeJwt(token: string): any {
+    const payload = token.split('.')[1];
+    return JSON.parse(atob(payload));
+  }
   login$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.login),
@@ -102,4 +106,27 @@ export class AuthEffects {
       })
     ), { dispatch: false }
   );
-}
+
+  loginWithGoogle$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.loginWithGoogle),
+      mergeMap(({ credential }) => {
+        const decoded = this.decodeJwt(credential);
+        const user = {
+          id: decoded.sub,
+          username: decoded.email,
+          token: credential,
+          role: 'user'
+        };
+        const menu = [{ id: 'home', label: 'sidebar.home', path: '/home', icon: 'fas fa-home' }];
+
+        this.authService.saveTokens(credential, 'fake-refresh');
+        this.authService.saveUser(user);
+        this.authService.saveMenu(menu);
+        this.store.dispatch(AuthActions.setMenu({ menu }));
+
+        return of(AuthActions.loginSuccess({ user, accessToken: credential, refreshToken: 'fake-refresh' }));
+      }),
+      catchError(() => of(AuthActions.loginFailure({ error: 'Google login failed' })))
+    )
+  );}

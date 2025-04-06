@@ -4,7 +4,8 @@
     "subtitle": "Please enter your information to continue",
     "username": "Username",
     "password": "Password",
-    "button": "Login"
+    "button": "Login",
+    "google-login": "Login with Google"
   },
   "home": {
     "welcome": "Welcome to the homepage",
@@ -32,5 +33,12 @@
     "minlength": "Too short",
     "maxlength": "Too long",
     "email": "Invalid email format"
+  },
+  "otpDialog": {
+    "title": "Login Verification",
+    "password": "Password",
+    "otp": "OTP Code",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
   }
 }
