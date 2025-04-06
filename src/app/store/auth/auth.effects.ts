@@ -7,6 +7,7 @@ import { catchError, map, mergeMap, of, tap } from 'rxjs';
 import * as AuthActions from './auth.actions';
 import { AuthService } from '../../application/services/auth.service';
 import { AuthApi } from '../../infrastructure/auth/auth.api';
+import {GoogleSignInService} from '../../application/services/google-signin.service';
 
 
 @Injectable()
@@ -16,6 +17,7 @@ export class AuthEffects {
   private authApi = inject(AuthApi);
   private router = inject(Router);
   private store = inject(Store);
+  private googleApi = inject(GoogleSignInService);
   private decodeJwt(token: string): any {
     const payload = token.split('.')[1];
     return JSON.parse(atob(payload));
@@ -106,27 +108,34 @@ export class AuthEffects {
       })
     ), { dispatch: false }
   );
-
   loginWithGoogle$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.loginWithGoogle),
-      mergeMap(({ credential }) => {
-        const decoded = this.decodeJwt(credential);
-        const user = {
-          id: decoded.sub,
-          username: decoded.email,
-          token: credential,
-          role: 'user'
-        };
-        const menu = [{ id: 'home', label: 'sidebar.home', path: '/home', icon: 'fas fa-home' }];
+      mergeMap(({ credential }) =>
+        this.googleApi.getUserInfo(credential).pipe(
+          map(profile => {
+            const user = {
+              id: profile.sub,
+              username: profile.email,
+              token: credential,
+              role: 'user',
+              avatar: profile.picture
+            };
 
-        this.authService.saveTokens(credential, 'fake-refresh');
-        this.authService.saveUser(user);
-        this.authService.saveMenu(menu);
-        this.store.dispatch(AuthActions.setMenu({ menu }));
+            const menu = [
+              { id: 'home', label: 'sidebar.home', path: '/home', icon: 'fas fa-home' }
+            ];
 
-        return of(AuthActions.loginSuccess({ user, accessToken: credential, refreshToken: 'fake-refresh' }));
-      }),
-      catchError(() => of(AuthActions.loginFailure({ error: 'Google login failed' })))
+            this.authService.saveTokens(credential, 'fake-refresh');
+            this.authService.saveUser(user);
+            this.authService.saveMenu(menu);
+            this.store.dispatch(AuthActions.setMenu({ menu }));
+
+            return AuthActions.loginSuccess({ user, accessToken: credential, refreshToken: 'fake-refresh' });
+          }),
+          catchError(() => of(AuthActions.loginFailure({ error: 'Google login failed' })))
+        )
+      )
     )
-  );}
+  );
+}

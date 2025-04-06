@@ -43,6 +43,7 @@ export class LoginComponent {
     this.showOtp.set(false);
 
     this.google.loginWithPopup((accessToken: string) => {
+      console.log(accessToken)
       this.store.dispatch(loginWithGoogle({ credential: accessToken }));
     });
   }
