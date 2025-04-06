@@ -22,7 +22,6 @@ export class OtpPasswordDialogComponent {
   }
 
   submit() {
-    console.log('submit')
     const { password, otp } = this.form.value;
     if (password === '123' && otp === '123') {
       this.confirmed.emit();
@@ -32,7 +31,6 @@ export class OtpPasswordDialogComponent {
   }
 
   cancel() {
-    console.log('cancel')
     this.canceled.emit();
   }
 }
