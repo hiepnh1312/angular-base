@@ -5,17 +5,16 @@ declare const google: any;
 
 @Injectable({ providedIn: 'root' })
 export class GoogleSignInService {
-  initGoogleSignIn(buttonId: string, callback: (res: any) => void) {
-    google.accounts.id.initialize({
+  loginWithPopup(callback: (token: string) => void) {
+    const client = google.accounts.oauth2.initTokenClient({
       client_id: environment.googleClientId,
-      callback,
+      scope: 'email profile openid',
+      callback: (response: any) => {
+        if (response.access_token) {
+          callback(response.access_token);
+        }
+      }
     });
-
-    google.accounts.id.renderButton(
-      document.getElementById(buttonId),
-      { theme: 'outline', size: 'large', width: '100%' }
-    );
-
-    google.accounts.id.prompt(); // Hiển thị one-tap nếu bạn muốn
+    client.requestAccessToken();
   }
 }
