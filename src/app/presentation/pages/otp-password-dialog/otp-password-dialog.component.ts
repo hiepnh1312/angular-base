@@ -23,11 +23,7 @@ export class OtpPasswordDialogComponent {
 
   submit() {
     const { password, otp } = this.form.value;
-    if (password === '123' && otp === '123') {
       this.confirmed.emit();
-    } else {
-      alert('Mật khẩu hoặc mã OTP sai!');
-    }
   }
 
   cancel() {
