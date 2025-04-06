@@ -10,7 +10,7 @@ export class GoogleSignInService {
   constructor(private http: HttpClient) {}
   loginWithPopup(callback: (token: string) => void) {
     const client = google.accounts.oauth2.initTokenClient({
-      client_id: environment.googleClientId,
+      client_id: environment.GOOGLE_CLIENT_ID,
       scope: 'email profile openid',
       callback: (response: any) => {
         if (response.access_token) {
@@ -21,7 +21,7 @@ export class GoogleSignInService {
     client.requestAccessToken();
   }
   getUserInfo(accessToken: string): Observable<any> {
-    return this.http.get('https://www.googleapis.com/oauth2/v3/userinfo', {
+    return this.http.get(environment.GOOGLE_API, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
